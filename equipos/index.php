@@ -106,9 +106,19 @@ $equipos = $consulta->fetchAll();
             Total de equipos:
             <strong><?php echo count($equipos); ?></strong>
         </p>
-    </div>
+    <div class="acciones-header">
 
-    <a href="crear.php" class="btn-primary">
+    <a
+        href="consulta_dinamica.php"
+        class="btn-primary"
+    >
+        Consulta dinámica
+    </a>
+
+    <a
+        href="crear.php"
+        class="btn-primary"
+    >
         + Registrar equipo
     </a>
 

@@ -1,0 +1,17 @@
+.acciones-header {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 650px) {
+    .equipos-header {
+        align-items: flex-start;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .acciones-header {
+        width: 100%;
+    }
+}
