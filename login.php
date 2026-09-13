@@ -137,6 +137,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 >
                     Iniciar sesión
                 </button>
+<p style="margin-top: 18px; text-align: center;">
+    <a href="recuperar_password.php">
+        ¿Olvidaste tu contraseña?
+    </a>
+</p>
 
             </form>
 
