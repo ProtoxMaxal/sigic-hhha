@@ -208,23 +208,48 @@ $mantencionesEquipo = $consultaMantenciones->fetchAll();
 
         <div class="equipos-header">
 
-            <div>
+    <div>
 
-                <h2>
-                    <?php
-                    echo htmlspecialchars(
-                        $equipo['nombre_equipo']
-                    );
-                    ?>
-                </h2>
+        <h2>
+            <?php
+            echo htmlspecialchars(
+                $equipo['nombre_equipo']
+            );
+            ?>
+        </h2>
 
-                <p>
-                    Ficha técnica del computador
-                </p>
+        <p>
+            Ficha técnica del computador
+        </p>
 
-            </div>
+    </div>
 
-        </div>
+    <div class="acciones-header">
+
+        <a
+            href="editar.php?id=<?php echo $idEquipo; ?>"
+            class="btn-primary"
+        >
+            Modificar equipo
+        </a>
+
+<?php if (
+    isset($_SESSION['rol']) &&
+    strtolower(trim($_SESSION['rol'])) === 'administrador'
+): ?>
+
+    <a
+        href="eliminar.php?id=<?php echo $idEquipo; ?>"
+        class="btn-primary"
+    >
+        Eliminar equipo
+    </a>
+
+<?php endif; ?>
+
+    </div>
+
+</div>
 
 
         <section class="ficha-equipo">

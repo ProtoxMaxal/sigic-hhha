@@ -16,19 +16,15 @@ require_once __DIR__ . '/../config/database.php';
 
 $consulta = $pdo->query(
     "SELECT
-        u.id_usuario,
-        u.nombre,
-        u.correo,
-        u.activo,
-        u.fecha_creacion,
-        r.nombre AS rol
-    FROM usuarios u
-    INNER JOIN roles r
-        ON u.id_rol = r.id_rol
-    ORDER BY u.id_usuario DESC"
+        id_responsable,
+        nombre,
+        cargo,
+        activo
+    FROM responsables
+    ORDER BY id_responsable DESC"
 );
 
-$usuarios = $consulta->fetchAll();
+$responsables = $consulta->fetchAll();
 
 ?>
 
@@ -44,12 +40,12 @@ $usuarios = $consulta->fetchAll();
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Usuarios - SIGIC-HHHA</title>
+    <title>Responsables - SIGIC-HHHA</title>
 
     <link
-        rel="stylesheet"
-        href="../public/css/styles.css"
-    >
+    rel="stylesheet"
+    href="../public/css/styles.css"
+>
 
 </head>
 
@@ -59,7 +55,7 @@ $usuarios = $consulta->fetchAll();
 
     <div>
         <h1>SIGIC-HHHA</h1>
-        <p>Gestión de Usuarios</p>
+        <p>Gestión de Responsables</p>
     </div>
 
     <div class="usuario-info">
@@ -76,11 +72,11 @@ $usuarios = $consulta->fetchAll();
         </p>
 
         <a
-            href="../dashboard.php"
-            class="logout-link"
-        >
-            Volver al inicio
-        </a>
+    href="../catalogos/index.php"
+    class="logout-link"
+>
+    Volver a catálogo
+</a>
 
     </div>
 
@@ -92,12 +88,12 @@ $usuarios = $consulta->fetchAll();
 
         <div>
 
-            <h2>Usuarios</h2>
+            <h2>Responsables</h2>
 
             <p>
-                Total de usuarios:
+                Total de responsables:
                 <strong>
-                    <?php echo count($usuarios); ?>
+                    <?php echo count($responsables); ?>
                 </strong>
             </p>
 
@@ -107,7 +103,7 @@ $usuarios = $consulta->fetchAll();
             href="crear.php"
             class="btn-primary"
         >
-            + Crear usuario
+            + Crear responsable
         </a>
 
     </div>
@@ -121,10 +117,8 @@ $usuarios = $consulta->fetchAll();
                 <tr>
                     <th>ID</th>
                     <th>Nombre</th>
-                    <th>Correo</th>
-                    <th>Rol</th>
+                    <th>Cargo</th>
                     <th>Estado</th>
-                    <th>Fecha de creación</th>
                     <th>Acciones</th>
                 </tr>
 
@@ -132,20 +126,20 @@ $usuarios = $consulta->fetchAll();
 
             <tbody>
 
-                <?php if (count($usuarios) > 0): ?>
+                <?php if (count($responsables) > 0): ?>
 
-                    <?php foreach ($usuarios as $usuario): ?>
+                    <?php foreach ($responsables as $responsable): ?>
 
                         <tr>
 
                             <td>
-                                <?php echo $usuario['id_usuario']; ?>
+                                <?php echo $responsable['id_responsable']; ?>
                             </td>
 
                             <td>
                                 <?php
                                 echo htmlspecialchars(
-                                    $usuario['nombre']
+                                    $responsable['nombre']
                                 );
                                 ?>
                             </td>
@@ -153,63 +147,34 @@ $usuarios = $consulta->fetchAll();
                             <td>
                                 <?php
                                 echo htmlspecialchars(
-                                    $usuario['correo']
+                                    $responsable['cargo']
                                 );
                                 ?>
                             </td>
 
                             <td>
                                 <?php
-                                echo htmlspecialchars(
-                                    $usuario['rol']
-                                );
-                                ?>
-                            </td>
-
-                            <td>
-                                <?php
-                                echo $usuario['activo']
+                                echo $responsable['activo']
                                     ? 'Activo'
                                     : 'Inactivo';
                                 ?>
                             </td>
 
                             <td>
-                                <?php
-                                echo htmlspecialchars(
-                                    $usuario['fecha_creacion']
-                                );
-                                ?>
-                            </td>
-
-                            <td>
 
                                 <a
-                                    href="editar.php?id=<?php echo $usuario['id_usuario']; ?>"
+                                    href="editar.php?id=<?php echo $responsable['id_responsable']; ?>"
                                     class="btn-small"
                                 >
                                     Modificar
                                 </a>
 
-                                <?php if (
-                                    (int)$usuario['id_usuario'] !==
-                                    (int)$_SESSION['id_usuario']
-                                ): ?>
-
-                                    <a
-                                        href="eliminar.php?id=<?php echo $usuario['id_usuario']; ?>"
-                                        class="btn-small"
-                                    >
-                                        Eliminar
-                                    </a>
-
-                                <?php else: ?>
-
-                                    <span>
-                                        Sesión actual
-                                    </span>
-
-                                <?php endif; ?>
+                                <a
+                                    href="eliminar.php?id=<?php echo $responsable['id_responsable']; ?>"
+                                    class="btn-small"
+                                >
+                                    Eliminar
+                                </a>
 
                             </td>
 
@@ -221,8 +186,8 @@ $usuarios = $consulta->fetchAll();
 
                     <tr>
 
-                        <td colspan="7">
-                            No existen usuarios registrados.
+                        <td colspan="5">
+                            No existen responsables registrados.
                         </td>
 
                     </tr>

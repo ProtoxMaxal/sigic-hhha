@@ -121,19 +121,25 @@ $totalMantenciones = $pdo->query(
 
                 <?php if ($_SESSION['rol'] === 'Administrador'): ?>
 
-                    <li>
-                       <a href="usuarios/index.php">
-                                Usuarios
-</a>
-                    </li>
+    <li>
+        <a href="usuarios/index.php">
+            Usuarios
+        </a>
+    </li>
 
-                    <li>
-                        <a href="auditoria/index.php">
-    Auditoría
-</a>
-                    </li>
+    <li>
+        <a href="catalogos/index.php">
+            Catálogos
+        </a>
+    </li>
 
-                <?php endif; ?>
+    <li>
+        <a href="auditoria/index.php">
+            Auditoría
+        </a>
+    </li>
+
+<?php endif; ?>
 
             </ul>
 

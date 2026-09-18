@@ -7,7 +7,10 @@ if (!isset($_SESSION['id_usuario'])) {
     exit;
 }
 
-if ($_SESSION['rol'] !== 'Administrador') {
+if (
+    !isset($_SESSION['rol']) ||
+    $_SESSION['rol'] !== 'Administrador'
+) {
     header('Location: ../dashboard.php');
     exit;
 }
@@ -16,19 +19,18 @@ require_once __DIR__ . '/../config/database.php';
 
 $consulta = $pdo->query(
     "SELECT
-        u.id_usuario,
+        u.id_ubicacion,
         u.nombre,
-        u.correo,
+        u.detalle,
         u.activo,
-        u.fecha_creacion,
-        r.nombre AS rol
-    FROM usuarios u
-    INNER JOIN roles r
-        ON u.id_rol = r.id_rol
-    ORDER BY u.id_usuario DESC"
+        s.nombre AS servicio
+     FROM ubicaciones u
+     INNER JOIN servicios s
+        ON u.id_servicio = s.id_servicio
+     ORDER BY s.nombre, u.nombre"
 );
 
-$usuarios = $consulta->fetchAll();
+$ubicaciones = $consulta->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 
@@ -44,7 +46,7 @@ $usuarios = $consulta->fetchAll();
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Usuarios - SIGIC-HHHA</title>
+    <title>Ubicaciones - SIGIC-HHHA</title>
 
     <link
         rel="stylesheet"
@@ -59,7 +61,7 @@ $usuarios = $consulta->fetchAll();
 
     <div>
         <h1>SIGIC-HHHA</h1>
-        <p>Gestión de Usuarios</p>
+        <p>Gestión de Ubicaciones</p>
     </div>
 
     <div class="usuario-info">
@@ -76,11 +78,11 @@ $usuarios = $consulta->fetchAll();
         </p>
 
         <a
-            href="../dashboard.php"
-            class="logout-link"
-        >
-            Volver al inicio
-        </a>
+    href="../catalogos/index.php"
+    class="logout-link"
+>
+    Volver a catálogo
+</a>
 
     </div>
 
@@ -92,12 +94,12 @@ $usuarios = $consulta->fetchAll();
 
         <div>
 
-            <h2>Usuarios</h2>
+            <h2>Ubicaciones</h2>
 
             <p>
-                Total de usuarios:
+                Total de ubicaciones:
                 <strong>
-                    <?php echo count($usuarios); ?>
+                    <?php echo count($ubicaciones); ?>
                 </strong>
             </p>
 
@@ -107,7 +109,7 @@ $usuarios = $consulta->fetchAll();
             href="crear.php"
             class="btn-primary"
         >
-            + Crear usuario
+            + Crear ubicación
         </a>
 
     </div>
@@ -120,11 +122,10 @@ $usuarios = $consulta->fetchAll();
 
                 <tr>
                     <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Correo</th>
-                    <th>Rol</th>
+                    <th>Servicio</th>
+                    <th>Ubicación</th>
+                    <th>Detalle</th>
                     <th>Estado</th>
-                    <th>Fecha de creación</th>
                     <th>Acciones</th>
                 </tr>
 
@@ -132,20 +133,20 @@ $usuarios = $consulta->fetchAll();
 
             <tbody>
 
-                <?php if (count($usuarios) > 0): ?>
+                <?php if (count($ubicaciones) > 0): ?>
 
-                    <?php foreach ($usuarios as $usuario): ?>
+                    <?php foreach ($ubicaciones as $ubicacion): ?>
 
                         <tr>
 
                             <td>
-                                <?php echo $usuario['id_usuario']; ?>
+                                <?php echo $ubicacion['id_ubicacion']; ?>
                             </td>
 
                             <td>
                                 <?php
                                 echo htmlspecialchars(
-                                    $usuario['nombre']
+                                    $ubicacion['servicio']
                                 );
                                 ?>
                             </td>
@@ -153,7 +154,7 @@ $usuarios = $consulta->fetchAll();
                             <td>
                                 <?php
                                 echo htmlspecialchars(
-                                    $usuario['correo']
+                                    $ubicacion['nombre']
                                 );
                                 ?>
                             </td>
@@ -161,55 +162,34 @@ $usuarios = $consulta->fetchAll();
                             <td>
                                 <?php
                                 echo htmlspecialchars(
-                                    $usuario['rol']
+                                    $ubicacion['detalle']
                                 );
                                 ?>
                             </td>
 
                             <td>
                                 <?php
-                                echo $usuario['activo']
+                                echo $ubicacion['activo']
                                     ? 'Activo'
                                     : 'Inactivo';
                                 ?>
                             </td>
 
                             <td>
-                                <?php
-                                echo htmlspecialchars(
-                                    $usuario['fecha_creacion']
-                                );
-                                ?>
-                            </td>
-
-                            <td>
 
                                 <a
-                                    href="editar.php?id=<?php echo $usuario['id_usuario']; ?>"
+                                    href="editar.php?id=<?php echo $ubicacion['id_ubicacion']; ?>"
                                     class="btn-small"
                                 >
                                     Modificar
                                 </a>
 
-                                <?php if (
-                                    (int)$usuario['id_usuario'] !==
-                                    (int)$_SESSION['id_usuario']
-                                ): ?>
-
-                                    <a
-                                        href="eliminar.php?id=<?php echo $usuario['id_usuario']; ?>"
-                                        class="btn-small"
-                                    >
-                                        Eliminar
-                                    </a>
-
-                                <?php else: ?>
-
-                                    <span>
-                                        Sesión actual
-                                    </span>
-
-                                <?php endif; ?>
+                                <a
+                                    href="eliminar.php?id=<?php echo $ubicacion['id_ubicacion']; ?>"
+                                    class="btn-small"
+                                >
+                                    Eliminar
+                                </a>
 
                             </td>
 
@@ -221,8 +201,8 @@ $usuarios = $consulta->fetchAll();
 
                     <tr>
 
-                        <td colspan="7">
-                            No existen usuarios registrados.
+                        <td colspan="6">
+                            No existen ubicaciones registradas.
                         </td>
 
                     </tr>

@@ -20,13 +20,10 @@ $consulta = $pdo->query(
         m.detalle,
         m.estado
     FROM mantenciones m
-
     INNER JOIN equipos e
         ON m.id_equipo = e.id_equipo
-
     INNER JOIN usuarios u
         ON m.id_usuario = u.id_usuario
-
     ORDER BY m.fecha DESC,
              m.id_mantencion DESC"
 );
@@ -89,7 +86,6 @@ $mantenciones = $consulta->fetchAll();
 
 </header>
 
-
 <main class="equipos-content">
 
     <div class="equipos-header">
@@ -116,7 +112,6 @@ $mantenciones = $consulta->fetchAll();
 
     </div>
 
-
     <div class="tabla-contenedor">
 
         <table class="tabla-equipos">
@@ -132,6 +127,7 @@ $mantenciones = $consulta->fetchAll();
                     <th>Detalle</th>
                     <th>Usuario</th>
                     <th>Fecha</th>
+                    <th>Acciones</th>
                 </tr>
 
             </thead>
@@ -149,60 +145,53 @@ $mantenciones = $consulta->fetchAll();
                             </td>
 
                             <td>
-                                <?php
-                                echo htmlspecialchars(
-                                    $mantencion['nombre_equipo']
-                                );
-                                ?>
+                                <?php echo htmlspecialchars($mantencion['nombre_equipo']); ?>
                             </td>
 
                             <td>
-                                <?php
-                                echo htmlspecialchars(
-                                    $mantencion['numero_inventario']
-                                    ?? '-'
-                                );
-                                ?>
+                                <?php echo htmlspecialchars($mantencion['numero_inventario'] ?? '-'); ?>
                             </td>
 
                             <td>
-                                <?php
-                                echo htmlspecialchars(
-                                    $mantencion['tipo']
-                                );
-                                ?>
+                                <?php echo htmlspecialchars($mantencion['tipo']); ?>
                             </td>
 
                             <td>
-                                <?php
-                                echo htmlspecialchars(
-                                    $mantencion['estado']
-                                );
-                                ?>
+                                <?php echo htmlspecialchars($mantencion['estado']); ?>
                             </td>
 
                             <td>
-                                <?php
-                                echo htmlspecialchars(
-                                    $mantencion['detalle']
-                                );
-                                ?>
+                                <?php echo htmlspecialchars($mantencion['detalle']); ?>
                             </td>
 
                             <td>
-                                <?php
-                                echo htmlspecialchars(
-                                    $mantencion['usuario']
-                                );
-                                ?>
+                                <?php echo htmlspecialchars($mantencion['usuario']); ?>
                             </td>
 
                             <td>
-                                <?php
-                                echo htmlspecialchars(
-                                    $mantencion['fecha']
-                                );
-                                ?>
+                                <?php echo htmlspecialchars($mantencion['fecha']); ?>
+                            </td>
+
+                            <td>
+
+                                <a
+                                    href="editar.php?id=<?php echo $mantencion['id_mantencion']; ?>"
+                                    class="btn-small"
+                                >
+                                    Modificar
+                                </a>
+
+                                <?php if ($_SESSION['rol'] === 'Administrador'): ?>
+
+                                    <a
+                                        href="eliminar.php?id=<?php echo $mantencion['id_mantencion']; ?>"
+                                        class="btn-small"
+                                    >
+                                        Eliminar
+                                    </a>
+
+                                <?php endif; ?>
+
                             </td>
 
                         </tr>
@@ -212,7 +201,7 @@ $mantenciones = $consulta->fetchAll();
                 <?php else: ?>
 
                     <tr>
-                        <td colspan="8">
+                        <td colspan="9">
                             No existen mantenciones registradas.
                         </td>
                     </tr>

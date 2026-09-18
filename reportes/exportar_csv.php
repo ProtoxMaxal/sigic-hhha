@@ -10,7 +10,12 @@ if (!isset($_SESSION['id_usuario'])) {
 require_once __DIR__ . '/../config/database.php';
 
 
-/* Obtener información del inventario */
+/*
+|--------------------------------------------------------------------------
+| Inventario + última revisión de seguridad
+|--------------------------------------------------------------------------
+*/
+
 $consulta = $pdo->query(
     "SELECT
         e.id_equipo,
@@ -18,17 +23,31 @@ $consulta = $pdo->query(
         e.numero_inventario,
         e.numero_serie,
         e.uuid,
+
         m.nombre AS marca,
+
         e.modelo,
         e.tipo,
+
         est.nombre AS estado,
+
         s.nombre AS servicio,
+
         u.nombre AS ubicacion,
+
         so.nombre AS sistema_operativo,
         so.version AS version_so,
         so.arquitectura,
+
         r.nombre AS responsable,
-        e.fecha_registro
+
+        e.fecha_registro,
+
+        seg.antivirus,
+        seg.version AS version_antivirus,
+        seg.activo AS antivirus_activo,
+        seg.actualizado AS antivirus_actualizado,
+        seg.fecha_revision
 
     FROM equipos e
 
@@ -50,20 +69,37 @@ $consulta = $pdo->query(
     LEFT JOIN responsables r
         ON e.id_responsable = r.id_responsable
 
+    LEFT JOIN seguridad_equipo seg
+        ON seg.id_seguridad = (
+            SELECT MAX(seg2.id_seguridad)
+            FROM seguridad_equipo seg2
+            WHERE seg2.id_equipo = e.id_equipo
+        )
+
     ORDER BY e.id_equipo"
 );
 
-$equipos = $consulta->fetchAll();
+$equipos = $consulta->fetchAll(PDO::FETCH_ASSOC);
 
 
-/* Nombre del archivo */
+/*
+|--------------------------------------------------------------------------
+| Nombre archivo
+|--------------------------------------------------------------------------
+*/
+
 $nombreArchivo =
     'sigic_hhha_inventario_' .
     date('Y-m-d_H-i-s') .
     '.csv';
 
 
-/* Encabezados para descarga */
+/*
+|--------------------------------------------------------------------------
+| Encabezados descarga
+|--------------------------------------------------------------------------
+*/
+
 header('Content-Type: text/csv; charset=UTF-8');
 
 header(
@@ -76,21 +112,27 @@ header('Pragma: no-cache');
 header('Expires: 0');
 
 
-/* Abrir salida */
+/*
+|--------------------------------------------------------------------------
+| Salida CSV
+|--------------------------------------------------------------------------
+*/
+
 $salida = fopen('php://output', 'w');
 
-
-/*
- * BOM UTF-8 para que Excel
- * reconozca correctamente tildes y ñ.
- */
+/* BOM UTF-8 para Excel */
 fprintf(
     $salida,
     chr(0xEF) . chr(0xBB) . chr(0xBF)
 );
 
 
-/* Encabezados del CSV */
+/*
+|--------------------------------------------------------------------------
+| Encabezados CSV
+|--------------------------------------------------------------------------
+*/
+
 fputcsv(
     $salida,
     [
@@ -109,13 +151,23 @@ fputcsv(
         'version_so',
         'arquitectura',
         'responsable',
-        'fecha_registro'
+        'fecha_registro',
+        'antivirus',
+        'version_antivirus',
+        'antivirus_activo',
+        'antivirus_actualizado',
+        'fecha_revision'
     ],
     ';'
 );
 
 
-/* Escribir los equipos */
+/*
+|--------------------------------------------------------------------------
+| Registros
+|--------------------------------------------------------------------------
+*/
+
 foreach ($equipos as $equipo) {
 
     fputcsv(
@@ -129,14 +181,19 @@ foreach ($equipos as $equipo) {
             $equipo['marca'] ?? '',
             $equipo['modelo'] ?? '',
             $equipo['tipo'] ?? '',
-            $equipo['estado'],
-            $equipo['servicio'],
-            $equipo['ubicacion'],
+            $equipo['estado'] ?? '',
+            $equipo['servicio'] ?? '',
+            $equipo['ubicacion'] ?? '',
             $equipo['sistema_operativo'] ?? '',
             $equipo['version_so'] ?? '',
             $equipo['arquitectura'] ?? '',
             $equipo['responsable'] ?? '',
-            $equipo['fecha_registro']
+            $equipo['fecha_registro'] ?? '',
+            $equipo['antivirus'] ?? '',
+            $equipo['version_antivirus'] ?? '',
+            $equipo['antivirus_activo'] ?? '',
+            $equipo['antivirus_actualizado'] ?? '',
+            $equipo['fecha_revision'] ?? ''
         ],
         ';'
     );

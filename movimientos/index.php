@@ -84,146 +84,169 @@ $movimientos = $consulta->fetchAll();
         </p>
 
         <a
-            href="../dashboard.php"
-            class="logout-link"
-        >
-            Volver al inicio
-        </a>
+    href="../dashboard.php"
+    class="logout-link"
+>
+    Volver al inicio
+</a>
 
     </div>
 
 </header>
 
+        <main class="equipos-content">
 
-<main class="equipos-content">
+            <div class="equipos-header">
 
-    <div class="equipos-header">
+                <div>
 
-        <div>
+                    <h2>Movimientos</h2>
 
-            <h2>Movimientos</h2>
+                    <p>
+                        Total de movimientos:
+                        <strong>
+                            <?php echo count($movimientos); ?>
+                        </strong>
+                    </p>
 
-            <p>
-                Total de movimientos:
-                <strong>
-                    <?php echo count($movimientos); ?>
-                </strong>
-            </p>
+                </div>
 
-        </div>
+                <a
+                    href="crear.php"
+                    class="btn-primary"
+                >
+                    + Registrar movimiento
+                </a>
 
-        <a
-            href="crear.php"
-            class="btn-primary"
-        >
-            + Registrar movimiento
-        </a>
-
-    </div>
+            </div>
 
 
-    <div class="tabla-contenedor">
+            <div class="tabla-contenedor">
 
-        <table class="tabla-equipos">
+                <table class="tabla-equipos">
 
-            <thead>
-
-                <tr>
-                    <th>ID</th>
-                    <th>Equipo</th>
-                    <th>Origen</th>
-                    <th>Destino</th>
-                    <th>Usuario</th>
-                    <th>Fecha</th>
-                    <th>Observación</th>
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                <?php if (count($movimientos) > 0): ?>
-
-                    <?php foreach ($movimientos as $movimiento): ?>
+                    <thead>
 
                         <tr>
-
-                            <td>
-                                <?php echo $movimiento['id_movimiento']; ?>
-                            </td>
-
-                            <td>
-                                <?php
-                                echo htmlspecialchars(
-                                    $movimiento['nombre_equipo']
-                                );
-                                ?>
-                            </td>
-
-                            <td>
-                                <?php
-                                echo htmlspecialchars(
-                                    $movimiento['ubicacion_origen']
-                                    ?? 'Sin ubicación anterior'
-                                );
-                                ?>
-                            </td>
-
-                            <td>
-                                <?php
-                                echo htmlspecialchars(
-                                    $movimiento['ubicacion_destino']
-                                );
-                                ?>
-                            </td>
-
-                            <td>
-                                <?php
-                                echo htmlspecialchars(
-                                    $movimiento['usuario']
-                                );
-                                ?>
-                            </td>
-
-                            <td>
-                                <?php
-                                echo htmlspecialchars(
-                                    $movimiento['fecha_movimiento']
-                                );
-                                ?>
-                            </td>
-
-                            <td>
-                                <?php
-                                echo htmlspecialchars(
-                                    $movimiento['observacion']
-                                    ?? '-'
-                                );
-                                ?>
-                            </td>
-
+                            <th>ID</th>
+                            <th>Equipo</th>
+                            <th>Origen</th>
+                            <th>Destino</th>
+                            <th>Usuario</th>
+                            <th>Fecha</th>
+                            <th>Observación</th>
+                            <th>Acciones</th>
                         </tr>
 
-                    <?php endforeach; ?>
+                    </thead>
 
-                <?php else: ?>
+                    <tbody>
 
-                    <tr>
-                        <td colspan="7">
-                            No existen movimientos registrados.
-                        </td>
-                    </tr>
+                        <?php if (count($movimientos) > 0): ?>
 
-                <?php endif; ?>
+                            <?php foreach ($movimientos as $movimiento): ?>
 
-            </tbody>
+                                <tr>
 
-        </table>
+                                    <td>
+                                        <?php echo $movimiento['id_movimiento']; ?>
+                                    </td>
 
-    </div>
+                                    <td>
+                                        <?php
+                                        echo htmlspecialchars(
+                                            $movimiento['nombre_equipo']
+                                        );
+                                        ?>
+                                    </td>
 
-</main>
+                                    <td>
+                                        <?php
+                                        echo htmlspecialchars(
+                                            $movimiento['ubicacion_origen']
+                                            ?? 'Sin ubicación anterior'
+                                        );
+                                        ?>
+                                    </td>
+
+                                    <td>
+                                        <?php
+                                        echo htmlspecialchars(
+                                            $movimiento['ubicacion_destino']
+                                        );
+                                        ?>
+                                    </td>
+
+                                    <td>
+                                        <?php
+                                        echo htmlspecialchars(
+                                            $movimiento['usuario']
+                                        );
+                                        ?>
+                                    </td>
+
+                                    <td>
+                                        <?php
+                                        echo htmlspecialchars(
+                                            $movimiento['fecha_movimiento']
+                                        );
+                                        ?>
+                                    </td>
+
+                                    <td>
+                                        <?php
+                                        echo htmlspecialchars(
+                                            $movimiento['observacion']
+                                            ?? '-'
+                                        );
+                                        ?>
+                                    </td>
+
+                                    <td>
+
+    <a
+        href="editar.php?id=<?php echo $movimiento['id_movimiento']; ?>"
+        class="btn-primary"
+    >
+        Modificar
+    </a>
+
+    <?php if ($_SESSION['rol'] === 'Administrador'): ?>
+
+        <a
+            href="eliminar.php?id=<?php echo $movimiento['id_movimiento']; ?>"
+            class="btn-primary"
+        >
+            Eliminar
+        </a>
+
+    <?php endif; ?>
+
+</td>
+
+                                </tr>
+
+                            <?php endforeach; ?>
+
+                        <?php else: ?>
+
+                            <tr>
+
+                                <td colspan="8">
+                                    No existen movimientos registrados.
+                                </td>
+
+                            </tr>
+
+                        <?php endif; ?>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+                </main>
 
 </body>
-
 </html>

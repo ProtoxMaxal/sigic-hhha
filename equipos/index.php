@@ -213,6 +213,27 @@ $equipos = $consulta->fetchAll();
         Ver ficha
     </a>
 
+    <a
+        href="editar.php?id=<?php echo $equipo['id_equipo']; ?>"
+        class="btn-small"
+    >
+        Modificar
+    </a>
+
+    <?php if (
+        isset($_SESSION['rol']) &&
+        strtolower(trim($_SESSION['rol'])) === 'administrador'
+    ): ?>
+
+        <a
+            href="eliminar.php?id=<?php echo $equipo['id_equipo']; ?>"
+            class="btn-small"
+        >
+            Eliminar
+        </a>
+
+    <?php endif; ?>
+
 </td>
                             </tr>
 
